@@ -39,13 +39,32 @@ Afterwards, I edited the README.md file in the **ansible-config-mgt** repository
 
 ![image](images/img7.png)
 
+
+### DEV ENVIRONMENT CONFIGURATIONS
 In order to carry out a neat and presentable code refactoring, I created a site.yml file in the playbooks directory and created a new directory named static-assignments where I placed the common.yml file. 
 
-I ran the site.yml anksible playbook in the dev environment
+![image](images/img8.png)
 
-Afterwards, I created common-del.yml file in the static-assignments directory with tasks of kdeleting wireshark from all servers and edited the content of the site.yml to include the path of newly created file. 
+Afterwards, I added the path to the inventory on **ansible.cfg** file.
+
+![image](images/img9.png)
+
+
+I inputted the necesssary code and ran the site.yml ansible playbook in the dev environment
+
+![image](images/img11.png)
+
+
+
+Afterwards, I created common-del.yml file in the static-assignments directory with tasks of deleting wireshark from all servers and edited the content of the site.yml to include the path of newly created file. 
 
 Once again, I ran the site.yml playbook in the dev environment and tested to confirm that wireshark has been uninstalled from the servers.
+
+### UAT ENVIRONMENT CONFIGURATIONS
+The UAT environment consists of 2 new web servers (RHEL instances) and the Ansible server for configuration. Instead of writing tasks to configure the web servers, we create a dedicated **role** in order to make our configuration reusable.
+
+I created and launched 2 EC2 instances and named them web1-UAT and web2-UAT.
+
 
 
 
