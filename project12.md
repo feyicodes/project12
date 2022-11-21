@@ -54,19 +54,91 @@ I inputted the necesssary code and ran the site.yml ansible playbook in the dev 
 
 ![image](images/img11.png)
 
-
-
 Afterwards, I created common-del.yml file in the static-assignments directory with tasks of deleting wireshark from all servers and edited the content of the site.yml to include the path of newly created file. 
 
+![image](images/img12.png)
+
 Once again, I ran the site.yml playbook in the dev environment and tested to confirm that wireshark has been uninstalled from the servers.
+
+
 
 ### UAT ENVIRONMENT CONFIGURATIONS
 The UAT environment consists of 2 new web servers (RHEL instances) and the Ansible server for configuration. Instead of writing tasks to configure the web servers, we create a dedicated **role** in order to make our configuration reusable.
 
 I created and launched 2 EC2 instances and named them web1-UAT and web2-UAT.
 
+![image](images/img13.png)
 
+Afterwards, I created a role with directories titled **roles** relative to the playbook file. with the structure as shown below:
+```bash
+    └── webserver
+    ├── README.md
+    ├── defaults
+    │   └── main.yml
+    ├── handlers
+    │   └── main.yml
+    ├── meta
+    │   └── main.yml
+    ├── tasks
+    │   └── main.yml
+    └── templates
+```
+I updated **ansible-config-mgt/inventory/uat.yml** file with the IP addresses of the 2 UAT Servers.
 
+```bash
+    [uat-webservers]
+    <Web1-UAT-Server-Private-IP-Address> ansible_ssh_user='ec2-user' 
+
+    <Web2-UAT-Server-Private-IP-Address> ansible_ssh_user='ec2-user' 
+```
+
+I activated the roles_path string in /etc/ansible/ansible.cfg by including the path /home/ubuntu/ansible-config-artifact/roles informing ansible knows where to find configured roles.
+
+Afterwards, I wrote configuration tasks into the roles/webserver/task/main.yml file to carry out the following actions on the UAT servers:
+* Install and configure Apache (httpd service)
+* Cloned the *tooling website* from github
+* Ensure the tooling website code is deployed to /var/www/html on the 2 UAT web servers
+* Ensure httpd service is started'
+
+The constituent of the main.yml file is as follows:
+
+```bash
+    ---
+    - name: install apache
+    become: true
+    ansible.builtin.yum:
+        name: "httpd"
+        state: present
+
+    - name: install git
+    become: true
+    ansible.builtin.yum:
+        name: "git"
+        state: present
+
+    - name: clone a repo
+    become: true
+    ansible.builtin.git:
+        repo: https://github.com/<your-name>/tooling.git
+        dest: /var/www/html
+        force: yes
+
+    - name: copy html content to one level up
+    become: true
+    command: cp -r /var/www/html/html/ /var/www/
+
+    - name: Start service httpd, if not started
+    become: true
+    ansible.builtin.service:
+        name: httpd
+        state: started
+
+    - name: recursively remove /var/www/html/html/ directory
+    become: true
+    ansible.builtin.file:
+        path: /var/www/html/html
+        state: absent
+```
 
 
 
