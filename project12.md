@@ -188,3 +188,7 @@ I ran the playbook against the **uat** inventory successfully.
 ![image](images/img22.png)
 
 ![image](images/img23.png)
+
+The final architecture of the Ansible-configured network is as shown below.
+
+![image](images/img24.png)
