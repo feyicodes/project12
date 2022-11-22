@@ -70,7 +70,7 @@ I created and launched 2 EC2 instances and named them web1-UAT and web2-UAT.
 ![image](images/img13.png)
 
 Afterwards, I created a role with directories titled **roles** relative to the playbook file. with the structure as shown below:
-```bash
+```
     └── webserver
     ├── README.md
     ├── defaults
@@ -85,7 +85,7 @@ Afterwards, I created a role with directories titled **roles** relative to the p
 ```
 I updated **ansible-config-mgt/inventory/uat.yml** file with the IP addresses of the 2 UAT Servers.
 
-```bash
+```yaml
     [uat-webservers]
     <Web1-UAT-Server-Private-IP-Address> ansible_ssh_user='ec2-user' 
 
@@ -102,7 +102,7 @@ Afterwards, I wrote configuration tasks into the roles/webserver/task/main.yml f
 
 The constituent of the main.yml file is as follows:
 
-```bash
+```yaml
     ---
     - name: install apache
     become: true
@@ -140,10 +140,30 @@ The constituent of the main.yml file is as follows:
         state: absent
 ```
 
+I created a new assignment for uat-webservers **uat-webservers.yml** within the **static-assignments** folder where I referenced the role.
 
+```yaml
+    ---
+    - hosts: uat-webservers
+    roles:
+     - webserver
+```
 
+I updated the **site.yml** file; being the entry point to the ansible configuration with reference to the **uat-webservers.yml**.
 
+```yaml
+    ---
+    - hosts: all
+    - import_playbook: ../static-assignments/common.yml
 
+    - hosts: uat-webservers
+    - import_playbook: ../static-assignments/uat-webservers.yml
+```
+
+Afterwards, I committed all changes, create a pull request and merge it to the **main** branch, then confirm the consequent **jenkins jobs** are updated into the **/home/ubuntu/ansible-config-artifact/** directory.
+
+I ran the playbook against the **uat** inventory and attempted to reach the **uat webservers** from my browser.
+    
 
 
 
