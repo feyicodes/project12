@@ -58,8 +58,18 @@ Afterwards, I created common-del.yml file in the static-assignments directory wi
 
 ![image](images/img12.png)
 
-Once again, I ran the site.yml playbook in the dev environment and tested to confirm that wireshark has been uninstalled from the servers.
+I tested the connection of the jenkins server with the others servers.
 
+![image](images/img14.png)
+
+
+Afterwards, I ran the site.yml playbook in the dev environment and tested to confirm that wireshark has been successfully uninstalled from the servers.
+
+![image](images/img15.png)
+
+![image](images/img16.png)
+
+![image](images/img17.png)
 
 
 ### UAT ENVIRONMENT CONFIGURATIONS
@@ -83,6 +93,9 @@ Afterwards, I created a role with directories titled **roles** relative to the p
     │   └── main.yml
     └── templates
 ```
+
+![image](images/img18.png)
+
 I updated **ansible-config-mgt/inventory/uat.yml** file with the IP addresses of the 2 UAT Servers.
 
 ```yaml
@@ -93,6 +106,8 @@ I updated **ansible-config-mgt/inventory/uat.yml** file with the IP addresses of
 ```
 
 I activated the roles_path string in /etc/ansible/ansible.cfg by including the path /home/ubuntu/ansible-config-artifact/roles informing ansible knows where to find configured roles.
+
+![image](images/img19.png)
 
 Afterwards, I wrote configuration tasks into the roles/webserver/task/main.yml file to carry out the following actions on the UAT servers:
 * Install and configure Apache (httpd service)
@@ -162,10 +177,14 @@ I updated the **site.yml** file; being the entry point to the ansible configurat
 
 Afterwards, I committed all changes, create a pull request and merge it to the **main** branch, then confirm the consequent **jenkins jobs** are updated into the **/home/ubuntu/ansible-config-artifact/** directory.
 
-I ran the playbook against the **uat** inventory and attempted to reach the **uat webservers** from my browser.
+I ran the playbook against the **uat** inventory successfully.
+
+![image](images/img20.png)
+
+![image](images/img21.png)
+
+ Finally, I sucessfully reached the **uat webservers** from my browser.
     
+![image](images/img22.png)
 
-
-
-
-
+![image](images/img23.png)
